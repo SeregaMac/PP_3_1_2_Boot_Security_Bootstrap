@@ -12,24 +12,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-@Configuration  //можно не писать
-@EnableWebSecurity  //включаем безопасность
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {  //унаследоваться от конф.безоп.спринг
-        private final SuccessUserHandler successUserHandler;
-//
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final SuccessUserHandler successUserHandler;
+
     public WebSecurityConfig(SuccessUserHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
     }
-//    @Autowired
-//    private DataSource dataSource;
+
     @Autowired
     private UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {  //все настройки безопасности, доступа
         http
-                .authorizeRequests()                     //строкой мы говорим предоставить разрешения для следующих url.
-                .antMatchers("/authentificated/**"/*, "/index"*/)
+                .authorizeRequests()
+                .antMatchers("/authentificated/**")
                 //.permitAll()//разрешает всем пользователям доступ к главной странице и странице "index"
                 //.anyRequest()//что для любых других запросов (кроме главной страницы и страницы "index"), пользователь должен быть аутентифицирован
                 .authenticated() //Если пользователь не аутентифицирован, он будет перенаправлен на страницу входа в систему.
@@ -44,57 +43,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {  //уна�
                 .logout().logoutSuccessUrl("/login")//для выхода пользователя из системы
                 .permitAll();
     }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
-//        authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource);
-//    }
-
-    // аутентификация inMemory
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =                   //минимальная информация о пользователе
-//                User.withDefaultPasswordEncoder()  //стандартный кодировщик паролей для хеширования пароля, для создания тестовых юзеров
-//                        .username("user")
-//                        .password("user")
-//                        .roles("USER")
-//                        .build(); //вызывается для создания и возврата готового объекта.
-//        UserDetails admin =                   //минимальная информация о пользователе
-//                User.withDefaultPasswordEncoder()  //стандартный кодировщик паролей для хеширования пароля, для создания тестовых юзеров
-//                        .username("admin")
-//                        .password("admin")
-//                        .roles("ADMIN", "USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user, admin); //возвращает юзера из памяти без БД
-//    }
-    // аутентификация из БД
-//    @Bean
-//    public JdbcUserDetailsManager jdbcUserDetailsManager (DataSource dataSorce){
-////        UserDetails user =                   //минимальная информация о пользователе
-////                User.withDefaultPasswordEncoder()  //стандартный кодировщик паролей для хеширования пароля, для создания тестовых юзеров
-////                        .username("user")
-////                        .password("user")
-////                        .roles("USER")
-////                        .build();
-////        UserDetails admin =                   //минимальная информация о пользователе
-////                User.withDefaultPasswordEncoder()  //стандартный кодировщик паролей для хеширования пароля, для создания тестовых юзеров
-////                        .username("admin")
-////                        .password("admin")
-////                        .roles("ADMIN", "USER")
-////                        .build();
-//        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSorce);
-////        if(jdbcUserDetailsManager.userExists(user.getUsername())){
-////            jdbcUserDetailsManager.deleteUser(user.getUsername());
-////        }
-////        if(jdbcUserDetailsManager.userExists(admin.getUsername())){
-////            jdbcUserDetailsManager.deleteUser(admin.getUsername());
-////        }
-////        jdbcUserDetailsManager.createUser(user);
-////        jdbcUserDetailsManager.createUser(admin);
-//        return jdbcUserDetailsManager;
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() { //шифрование

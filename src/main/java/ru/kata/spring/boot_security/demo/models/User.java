@@ -1,12 +1,5 @@
 package ru.kata.spring.boot_security.demo.models;
 
-
-//import jakarta.persistence.*;
-//import jakarta.validation.constraints.Min;
-//import jakarta.validation.constraints.NotEmpty;
-//import jakarta.validation.constraints.Size;
-
-import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails{  //надо добавить имплемент UserDetails
+public class User implements UserDetails {  //надо добавить имплемент UserDetails
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,16 +30,16 @@ public class User implements UserDetails{  //надо добавить импл�
     @Column
     private int age;
 
-//    @Column(unique = true)
+    //    @Column(unique = true)
     private String username;
 
     @Column
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL) //означает, что все действия, которые мы выполняем с родительским объектом,
-    @JoinTable(name = "user_role",          // нужно повторить и для его зависимых объектов.
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
 
@@ -59,10 +52,6 @@ public class User implements UserDetails{  //надо добавить импл�
         this.age = age;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public List<Role> getRoles() {
         return roles;
     }
@@ -72,7 +61,7 @@ public class User implements UserDetails{  //надо добавить импл�
     }
 
     public void addRollToUser(Role role) {
-        if(roles == null) {
+        if (roles == null) {
             roles = new ArrayList<>();
         }
         roles.add(role);
@@ -102,16 +91,8 @@ public class User implements UserDetails{  //надо добавить импл�
         this.age = age;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public String getUserName() {
-        return username;
     }
 
     public void setUserName(String userName) {
@@ -156,5 +137,4 @@ public class User implements UserDetails{  //надо добавить импл�
     public boolean isEnabled() { //указывающее, включен ли пользователь в системе.
         return true;
     }
-
 }

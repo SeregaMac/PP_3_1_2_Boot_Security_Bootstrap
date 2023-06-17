@@ -13,7 +13,6 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
+
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDao.deleteUser(id);
     }
 
-    public User findByUsername(String username){ //обертка над методом репозитория
+    public User findByUsername(String username) { //обертка над методом репозитория
         return userRepository.findByUsername(username);
     }
 
@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails
                 .User(user.getName(), user.getPassword(), getAuthorities(user.getRoles()));
     }
+
     private Collection<? extends GrantedAuthority> getAuthorities(List<Role> roles) { //представляет права доступа пользователя.
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
     }
