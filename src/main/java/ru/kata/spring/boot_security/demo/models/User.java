@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User implements UserDetails{  //надо добавить имплемент UserDetails
 
     @Id
@@ -37,7 +37,7 @@ public class User implements UserDetails{  //надо добавить импл�
     @Column
     private int age;
 
-    @Column(name = "user_name")
+//    @Column(unique = true)
     private String username;
 
     @Column
@@ -57,6 +57,18 @@ public class User implements UserDetails{  //надо добавить импл�
         this.surname = surname;
         this.name = name;
         this.age = age;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public void addRollToUser(Role role) {

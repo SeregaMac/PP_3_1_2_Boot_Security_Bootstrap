@@ -22,18 +22,22 @@
         <td th:text="${user.getSurname()}"/>
         <td th:text="${user.getAge()}"/>
         <td>
-            <form th:method="PATCH" th:action="@{/update/{id}(id=${user.getId()})}">
+            <form th:method="PATCH" th:action="@{admin/update/{id}(id=${user.getId()})}">
                 <input type="submit" value="Update">
             </form>
         </td>
         <td>
-            <form th:method="DELETE" th:action="@{/delete/{id}(id=${user.getId()})}">
+            <form th:method="DELETE" th:action="@{admin/delete/{id}(id=${user.getId()})}">
                 <input type="submit" value="Delete">
             </form>
         </td>
     </tr>
 </table>
 <br>
-<button value="Add" onclick="window.location.href = 'addUser'">add</button>
+<button value="Add" onclick="window.location.href = 'admin/addUser'">add</button>
+<br>
+<form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Exit">
+</form>
 </body>
 </html>

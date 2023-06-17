@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 
@@ -15,64 +16,37 @@ import java.security.Principal;
 import java.util.List;
 
 
-@RestController
+@Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userServiceImpl;
+    @Autowired
+    UserRepository userRepository;
 
-//    @GetMapping(value = "/")
-//    public String showUsers(Model model) {
-//        List<User> listUsers = userServiceImpl.getUsers();
-//        model.addAttribute("users", listUsers);
-//        return "users/showAllUsers";
-//    }
+
 
     @GetMapping("/")
-    public String homePage(){
+    public @ResponseBody String homePage(Principal principal){
+        principal.getName();
         return "home";
     }
 
-    @GetMapping("/authentificated")
-    public String pageForAuthentificated(Principal principal){ //principal короткая информация о пользователе
-        return "autenfic " + principal.getName();              //хранится в контексте спринг секюрити
-    }
+//    @GetMapping("/authentificated")
+//    public String pageForAuthentificated(Principal principal){ //principal короткая информация о пользователе
+//        return "autenfic " + principal.getName();              //хранится в контексте спринг секюрити
+//    }
 
-    @GetMapping("/admin")
-    public String pageForAdmin(Principal principal){
-        return "admin: " + principal.getName();
-    }
 
     @GetMapping("/profile")
-    public String pageForProfile(Principal principal){
-        return "user: " + principal.getName();
+    public String pageForProfile(Principal principal, Model model) {
+            User user = userRepository.findByUsername(principal.getName());
+            model.addAttribute("user", user);
+            return "users/profileUser";
     }
 
-    @GetMapping("/addUser")
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        return "users/saveUser";
-    }
 
-    @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") @Valid User user,
-                           BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "users/saveUser";
-        }
-        userServiceImpl.save(user);
-        return "redirect:/";
-    }
 
-    @PatchMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userServiceImpl.getUser(id));
-        return "users/saveUser";
-    }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
-        userServiceImpl.deleteUser(id);
-        return "redirect:/";
-    }
 }
