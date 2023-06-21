@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"></html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,15 +14,16 @@
         <th>Surname</th>
         <th>age</th>
         <th>Username</th>
-        <th>password</th>
+        <th>ID</th>
         <th></th>
         <th></th>
     </tr>
     <tr th:each="user : ${users}">
-        <td th:text="${user.getName()}"/>
-        <td th:text="${user.getSurname()}"/>
-        <td th:text="${user.getAge()}"/>
-        <td th:text="${user.getUsername()}"/>
+        <td th:text="${user.getName()}"></td>
+        <td th:text="${user.getSurname()}"></td>
+        <td th:text="${user.getAge()}"></td>
+        <td th:text="${user.getUsername()}"></td>
+        <td th:text="${user.getId()}"></td>
         <td>
             <form th:method="PATCH" th:action="@{admin/update/{id}(id=${user.getId()})}">
                 <input type="submit" value="Update">

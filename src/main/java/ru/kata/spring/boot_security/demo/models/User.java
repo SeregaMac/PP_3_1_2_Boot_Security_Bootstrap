@@ -1,15 +1,17 @@
 package ru.kata.spring.boot_security.demo.models;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +19,7 @@ public class User implements UserDetails {  //надо добавить импл
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @NotEmpty(message = "Введите имя")
     @Size(min = 3, max = 12, message = "Размер имени от 3 до 12")
     @Column
@@ -30,13 +32,13 @@ public class User implements UserDetails {  //надо добавить импл
     @Column
     private int age;
 
-    //    @Column(unique = true)
+    @Column//(unique = true)
     private String username;
 
     @Column
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
@@ -58,13 +60,6 @@ public class User implements UserDetails {  //надо добавить импл
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    public void addRollToUser(Role role) {
-        if (roles == null) {
-            roles = new ArrayList<>();
-        }
-        roles.add(role);
     }
 
     public String getName() {
@@ -95,12 +90,17 @@ public class User implements UserDetails {  //надо добавить импл
         return id;
     }
 
-    public void setUserName(String userName) {
-        this.username = userName;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -108,14 +108,13 @@ public class User implements UserDetails {  //надо добавить импл
         return password;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() { //представляет права доступа пользователя.
-        return roles;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public Collection<? extends GrantedAuthority> getAuthorities() { //представляет права доступа пользователя.
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
     }
 
     @Override
@@ -136,5 +135,30 @@ public class User implements UserDetails {  //надо добавить импл
     @Override
     public boolean isEnabled() { //указывающее, включен ли пользователь в системе.
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", age=" + age +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return id == user.id && age == user.age && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, age, username);
     }
 }
