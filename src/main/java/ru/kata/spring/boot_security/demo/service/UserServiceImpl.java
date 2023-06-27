@@ -22,12 +22,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Lazy
     private PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();

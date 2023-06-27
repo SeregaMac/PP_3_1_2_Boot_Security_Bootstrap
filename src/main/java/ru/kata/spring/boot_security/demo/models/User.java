@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -32,7 +33,8 @@ public class User implements UserDetails {  //надо добавить импл
     @Column
     private int age;
 
-    @Column//(unique = true)
+    @Column(unique = true)
+    @Email
     private String username;
 
     @Column
@@ -48,10 +50,12 @@ public class User implements UserDetails {  //надо добавить импл
     public User() {
     }
 
-    public User(String name, String surname, int age) {
-        this.surname = surname;
+    public User(String name, String surname, int age, String username, String password) {
         this.name = name;
+        this.surname = surname;
         this.age = age;
+        this.username = username;
+        this.password = password;
     }
 
     public List<Role> getRoles() {

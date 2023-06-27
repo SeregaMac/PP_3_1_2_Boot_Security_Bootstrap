@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.configs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,8 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {  //все настройки безопасности, доступа
-        http.csrf().disable()
-                .authorizeRequests()// начинает настройку правил авторизации запросов.
+        http.authorizeRequests()// начинает настройку правил авторизации запросов.
                 .antMatchers("/", "/index").permitAll()//разрешает доступ ко всем запросам, обращающимся к корневому пути или /index без авторизации.
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")//ограничивает доступ к запросам, начинающимся с /admin/, только пользователям с ролью "ADMIN".
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")//ограничивает доступ к запросу /user пользователям, которые имеют роль "ADMIN" или "USER".
