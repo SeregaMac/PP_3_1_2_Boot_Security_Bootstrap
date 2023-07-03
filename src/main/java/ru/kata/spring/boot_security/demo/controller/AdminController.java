@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -20,30 +20,50 @@ public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final UserRepository userRepository;
+    private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService,
-                           UserRepository userRepository) {
+    public AdminController(UserService userService, RoleService roleService, UserValidator userValidator) {
         this.userService = userService;
         this.roleService = roleService;
-        this.userRepository = userRepository;
+        this.userValidator = userValidator;
     }
 
-    @GetMapping("/addUser")
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("rolesList", roleService.findAll());
-        return "users/saveUser";
-    }
-
-    @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("userOne") @Valid User user,
+    @PatchMapping("/editUser")
+    public String editUser(Model model, @ModelAttribute("userOne") @Valid User user,
                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            return "redirect:/admin";
+        }
+
+        userService.save(user);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/saveNewUser")
+    public String saveUser(Model model, @ModelAttribute("newUser") @Valid User newUser,
+                           BindingResult bindingResult, Principal principal) {
+
+        userValidator.validate(newUser, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("newUser", newUser);
+            model.addAttribute("bindingResult", bindingResult);
+            model.addAttribute("activeTable", "newUser");
+
+            User user = userService.findByUsername(principal.getName());
+            model.addAttribute("thisUser", user);
+
+            //все юзеры
+            List<User> listUsers = userService.getUsers();
+            model.addAttribute("users", listUsers);
+
+            //роли
+            model.addAttribute("rolesList", roleService.findAll());
+
             return "users/allUserBoot";
         }
-        userService.save(user);
+
         return "redirect:/admin";
     }
 
@@ -57,7 +77,7 @@ public class AdminController {
     public String pageBoot(Principal principal, Model model) {
 
         //пользователь
-        User user = userRepository.findByUsername(principal.getName());
+        User user = userService.findByUsername(principal.getName());
         model.addAttribute("thisUser", user);
 
         //все юзеры
@@ -67,13 +87,8 @@ public class AdminController {
         //роли
         model.addAttribute("rolesList", roleService.findAll());
 
-//        //роли пользователя
-//        Authentication authentication = (Authentication) principal;
-//        List<String> roles = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .map(role -> role.replace("ROLE_", ""))
-//                .collect(Collectors.toList());
-//        model.addAttribute("rolesUser", roles);
+        model.addAttribute("newUser", new User());
+
         return "users/allUserBoot";
     }
 }

@@ -21,23 +21,22 @@ public class User implements UserDetails {  //надо добавить импл
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotEmpty(message = "Введите имя")
     @Size(min = 3, max = 12, message = "Размер имени от 3 до 12")
-    @Column
     private String name;
+
     @NotEmpty(message = "Введите фамилию")
     @Size(min = 3, max = 12, message = "Размер фамилии от 3 до 12")
-    @Column
     private String surname;
+
     @Min(value = 7, message = "Количество лет не должно быть меньше 7")
-    @Column
     private int age;
 
     @Column(unique = true)
     @Email
     private String username;
 
-    @Column
     private String password;
 
     @ManyToMany
