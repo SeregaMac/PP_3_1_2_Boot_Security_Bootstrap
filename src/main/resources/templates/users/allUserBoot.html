@@ -150,9 +150,6 @@
                                                                                th:type="text"
                                                                                class="form-control" id="nameEdit"
                                                                                required/>
-                                                                        <span th:if="${#fields.hasErrors('name')}"
-                                                                              class="text-danger" th:errors="*{name}">
-                                                                        </span>
                                                                         <br>
                                                                         <label for="surnameEdit"><b>Surname</b></label>
                                                                         <input th:name="surname"
