@@ -63,7 +63,7 @@ public class AdminController {
 
             return "users/allUserBoot";
         }
-
+        userService.save(newUser);
         return "redirect:/admin";
     }
 
